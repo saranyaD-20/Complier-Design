@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <string.h>
+void findFirstA(char firstSetA[]) {
+    // A → ε, so FIRST(A) = {ε}
+    strcpy(firstSetA, "ε");
+}
+void findFirstB(char firstSetB[]) {
+    // B → ε, so FIRST(B) = {ε}
+    strcpy(firstSetB, "ε");
+}
+void findFirstS(char firstSetS[], char firstSetA[], char firstSetB[]) {
+    // S → AaAb | BbBa
+    // FIRST(S) will contain FIRST(AaAb) and FIRST(BbBa)
+    
+    // Since FIRST(A) = {ε}, we look at 'a'
+    // Since FIRST(B) = {ε}, we look at 'b'
+    
+    // Therefore, FIRST(S) = {a, b}
+    strcpy(firstSetS, "a, b");
+}
+
+int main() {
+    char firstSetA[10], firstSetB[10], firstSetS[10];
+
+    // Find FIRST(A) and FIRST(B)
+    findFirstA(firstSetA);
+    findFirstB(firstSetB);
+
+    // Find FIRST(S)
+    findFirstS(firstSetS, firstSetA, firstSetB);
+
+    // Print the FIRST sets
+    printf("FIRST(A) = {%s}\n", firstSetA);
+    printf("FIRST(B) = {%s}\n", firstSetB);
+    printf("FIRST(S) = {%s}\n", firstSetS);
+
+    return 0;
+}
