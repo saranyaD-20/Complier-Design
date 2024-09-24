@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+void addSymbol(char first[], char symbol) {
+    if (strchr(first, symbol) == NULL) {
+        int len = strlen(first);
+        first[len] = symbol;
+        first[len + 1] = '\0';
+    }
+}
+
+void computeFirst(char nonTerminal, char productions[MAX][MAX], int productionCount, char firstSets[MAX][MAX]) {
+    for (int i = 0; i < productionCount; i++) {
+        if (productions[i][0] == nonTerminal) {
+            char nextSymbol = productions[i][3]; // Get the first symbol after the arrow
+            if (nextSymbol >= 'a' && nextSymbol <= 'z') {
+                addSymbol(firstSets[nonTerminal - 'A'], nextSymbol); // Terminal symbol
+            } else if (nextSymbol == 'E') {
+                addSymbol(firstSets[nonTerminal - 'A'], 'E'); // Epsilon
+            }
+        }
+    }
+}
+
+int main() {
+    char productions[MAX][MAX] = {
+        "S->AaAb",
+        "S->BbBa",
+        "A->E",  // A → ∈ (epsilon)
+        "B->E"   // B → ∈ (epsilon)
+    };
+
+    char nonTerminals[] = {'S', 'A', 'B'};
+    char firstSets[MAX][MAX] = {"", "", ""};  // Store FIRST sets for S, A, B
+    int productionCount = 4;
+
+    // Compute FIRST sets for each non-terminal
+    for (int i = 0; i < 3; i++) {
+        computeFirst(nonTerminals[i], productions, productionCount, firstSets);
+    }
+
+    // Print FIRST sets
+    for (int i = 0; i < 3; i++) {
+        printf("FIRST(%c) = %s\n", nonTerminals[i], firstSets[i]);
+    }
+
+    return 0;
+}
