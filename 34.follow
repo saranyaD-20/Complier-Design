@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+void addSymbol(char follow[], char symbol) {
+    if (strchr(follow, symbol) == NULL) {
+        int len = strlen(follow);
+        follow[len] = symbol;
+        follow[len + 1] = '\0';
+    }
+}
+void computeFollow(char nonTerminal, char follow[], char productions[MAX][MAX], int productionCount, char followSets[MAX][MAX]) {
+    int i, j;
+    if (nonTerminal == 'S') {
+        addSymbol(follow, '$');
+    }
+
+    for (i = 0; i < productionCount; i++) {
+        for (j = 0; productions[i][j] != '\0'; j++) {
+            if (productions[i][j] == nonTerminal) {
+                // Check the next symbol in the production
+                if (productions[i][j + 1] != '\0') {
+                    if (productions[i][j + 1] >= 'a' && productions[i][j + 1] <= 'z') {
+                        // Add terminal to FOLLOW set
+                        addSymbol(follow, productions[i][j + 1]);
+                    } else {
+                        // Add FOLLOW of the next non-terminal
+                        strcat(follow, followSets[productions[i][j + 1] - 'A']);
+                    }
+                } else {
+                    // Add FOLLOW of the left-hand side non-terminal
+                    strcat(follow, followSets[productions[i][0] - 'A']);
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    char productions[MAX][MAX] = {
+        "S->AaAb",
+        "S->BbBa",
+        "A->E",  // A -> ∈ (epsilon)
+        "B->E"   // B -> ∈ (epsilon)
+    };
+
+    char nonTerminals[MAX] = {'S', 'A', 'B'};
+    char followSets[MAX][MAX] = {""};
+
+    int productionCount = 4;
+    int i;
+
+    // Compute FOLLOW sets for all non-terminals
+    for (i = 0; i < 3; i++) {
+        computeFollow(nonTerminals[i], followSets[i], productions, productionCount, followSets);
+    }
+
+    // Print FOLLOW sets
+    for (i = 0; i < 3; i++) {
+        printf("FOLLOW(%c) = %s\n", nonTerminals[i], followSets[i]);
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
