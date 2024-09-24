@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+void computeTrailing(char nonTerminal, char productions[MAX][MAX], int productionCount, char trailing[MAX]) {
+    int i, j;
+    for (i = 0; i < productionCount; i++) {
+        if (productions[i][0] == nonTerminal) {
+            int len = strlen(productions[i]);
+            if (productions[i][len - 1] >= 'a' && productions[i][len - 1] <= 'z') {
+                strncat(trailing, &productions[i][len - 1], 1);  // Add terminal to trailing
+            }
+        }
+    }
+}
+
+int main() {
+    int i;
+    char nonTerminals[MAX] = {'E', 'T', 'F'};
+    char productions[MAX][MAX] = {"E+T", "T", "T*F", "F", "(E)", "id"};
+    char trailingSets[MAX][MAX] = {""};
+
+    int productionCount = 6;
+    for (i = 0; i < 3; i++) {
+        computeTrailing(nonTerminals[i], productions, productionCount, trailingSets[i]);
+    }
+    for (i = 0; i < 3; i++) {
+        printf("TRAILING(%c) = %s\n", nonTerminals[i], trailingSets[i]);
+    }
+
+    return 0;
+}
